@@ -4,8 +4,11 @@ import { verifyTotal } from "./checksum.ts";
 import { assignTeams, collidingTags, type AssignedPlayer } from "./match.ts";
 
 export type Report = {
-  /** 検算が通ったときの要約行。通らなければ null（代わりに warnings に理由が入る） */
-  headline: string | null;
+  /**
+   * 検算が通ったときの要約行。通らなければ空（代わりに warnings に理由が入る）。
+   * 配列なのは `/sum` の `SumReport` と `formatMessage()` を共有するため（§16.7）。
+   */
+  headlines: string[];
   /** gb2 に貼り付けるテキスト本体 */
   table: string;
   /** 問題がひとつもなければ true */
@@ -66,9 +69,9 @@ export function buildReport(players: readonly OcrPlayer[], tags: readonly string
     );
   }
 
-  const headline = checksum.ok
-    ? `✅ 合計 ${checksum.total}点 (${checksum.raceCount}レース) / ${tags.length}チーム — 検算OK`
-    : null;
+  const headlines = checksum.ok
+    ? [`✅ 合計 ${checksum.total}点 (${checksum.raceCount}レース) / ${tags.length}チーム — 検算OK`]
+    : [];
 
-  return { headline, table, clean: warnings.length === 0, warnings, players: assigned };
+  return { headlines, table, clean: warnings.length === 0, warnings, players: assigned };
 }

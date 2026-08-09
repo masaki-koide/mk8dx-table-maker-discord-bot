@@ -20,7 +20,19 @@ SPYAIR♪ 93
 ...
 ```
 
-設計の確定仕様は [`docs/design.md`](docs/design.md) を参照。
+複数の模擬をまたいだ**個人点**は `/sum` でまとめる。実行するとモーダルが開くので、
+模擬ごとに `/result` の出力を貼り付ける（最大 5 模擬）。合計は gb2 が計算する。
+
+```
+✅ 1模擬目: 984点 (12レース)
+✅ 2模擬目: 984点 (12レース)
+
+ラッパーひろし 133|122
+いもすけりん 97|0
+...
+```
+
+設計の確定仕様は [`docs/design.md`](docs/design.md) を参照（`/sum` は §16）。
 
 ## セットアップ
 
@@ -66,6 +78,53 @@ bun run secrets:sync -- --dry-run    # 差分だけ確認
 bun run secrets:sync -- --prune      # .env に無いキーを Fly から削除
 ```
 
+## 利用を許可するサーバーを増やす
+
+```bash
+bun run add-guild -- <サーバーID>
+```
+
+これ1つで完結します。内部では次の順に実行されます:
+
+1. そのサーバーにスラッシュコマンドを登録（＝Bot が参加しているかの確認を兼ねる）
+2. `.env` の `ALLOWED_GUILD_IDS` に追記
+3. `bun run secrets:sync` で本番に反映（**マシンが再起動します**。10秒ほど落ちます）
+
+**Bot が未招待なら 1 で止まり、`.env` は書き換わりません。** 招待 URL が表示されるので、
+そこから追加してからやり直してください。Public Bot を OFF にしているので、
+**追加できるのはアプリのオーナーだけ**です。
+
+```bash
+bun run add-guild -- <サーバーID> --dry-run   # 何が起きるか確認するだけ
+bun run add-guild -- <サーバーID> --no-sync   # .env と登録まで。本番反映は後で
+```
+
+サーバーIDは Discord でサーバーを右クリック →「サーバーIDをコピー」。
+出てこない場合は 設定 → 詳細設定 → 開発者モード を ON にしてください。
+
+### 手動でやる場合
+
+```bash
+# 1. 招待 URL を確認（引数なしで実行すると表示されます）
+bun run add-guild
+# 2. .env の ALLOWED_GUILD_IDS にカンマ区切りで追記
+# 3. コマンドを登録
+bun run register
+# 4. 本番に反映
+bun run secrets:sync
+```
+
+**4 を忘れると本番だけ古い許可リストのままになり**、新しいサーバーで
+「このサーバーでは利用できません」と拒否され続けます。`fly deploy` では反映されません。
+
+## サーバーを許可対象から外す
+
+`.env` の `ALLOWED_GUILD_IDS` から該当 ID を削除して `bun run secrets:sync`。
+
+スラッシュコマンド自体は登録されたまま残るので、そのサーバーの `/result` / `/sum` は
+表示はされるが実行すると拒否される、という状態になります。完全に消すなら
+Bot をそのサーバーから退出させてください。
+
 ## コマンド
 
 | コマンド | 内容 |
@@ -73,7 +132,8 @@ bun run secrets:sync -- --prune      # .env に無いキーを Fly から削除
 | `bun test` | ユニットテスト（API キー不要） |
 | `bun run typecheck` | 型チェック |
 | `bun run dev` | ローカルで Bot を起動 |
-| `bun run register` | スラッシュコマンドを登録 |
+| `bun run add-guild -- <id>` | 許可サーバーを追加（登録 → `.env` 更新 → 本番反映） |
+| `bun run register` | 全許可サーバーにスラッシュコマンドを登録 |
 | `bun run secrets:sync` | `.env` を Fly のシークレットに同期（`--dry-run` / `--prune`） |
 | `bun run verify:ocr` | 実画像に対する OCR の安定性・正確性を検証（要 API キー） |
 | `bun run preview <image> <tag...>` | 実画像から投稿本文を生成して表示（要 API キー） |

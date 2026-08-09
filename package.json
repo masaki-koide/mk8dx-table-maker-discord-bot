@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node --disable-warning=ExperimentalWarning src/index.ts",
     "dev": "node --env-file=.env --disable-warning=ExperimentalWarning src/index.ts",
-    "register": "node --env-file=.env --disable-warning=ExperimentalWarning src/discord/register.ts",
+    "register": "node --env-file=.env --disable-warning=ExperimentalWarning scripts/register.ts",
+    "add-guild": "node --env-file=.env --disable-warning=ExperimentalWarning scripts/add-guild.ts",
     "test": "bun test",
     "typecheck": "tsc --noEmit",
     "secrets:sync": "node scripts/sync-secrets.ts",

@@ -1,8 +1,9 @@
 import { Client, Events, GatewayIntentBits } from "discord.js";
 import { loadConfig } from "./config.ts";
-import { COMMAND_NAME } from "./discord/command.ts";
+import { COMMAND_NAME, SUM_COMMAND_NAME } from "./discord/command.ts";
 import { RateLimiter } from "./discord/guard.ts";
-import { handleResult, type HandlerDeps } from "./discord/handler.ts";
+import { handleResult, handleSum, handleSumSubmit, type HandlerDeps } from "./discord/handler.ts";
+import { SUM_MODAL_ID } from "./discord/modal.ts";
 
 const config = loadConfig();
 
@@ -26,13 +27,19 @@ client.once(Events.ClientReady, (ready) => {
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
-  if (!interaction.isChatInputCommand() || interaction.commandName !== COMMAND_NAME) return;
   try {
-    await handleResult(interaction, deps);
+    if (interaction.isChatInputCommand()) {
+      if (interaction.commandName === COMMAND_NAME) await handleResult(interaction, deps);
+      else if (interaction.commandName === SUM_COMMAND_NAME) await handleSum(interaction, deps);
+      return;
+    }
+    if (interaction.isModalSubmit() && interaction.customId === SUM_MODAL_ID) {
+      await handleSumSubmit(interaction, deps);
+    }
   } catch (error) {
     // ハンドラ内で応答済みのはずだが、応答前に落ちた場合の最後の砦
     console.error("[interaction] 未捕捉のエラー:", error);
-    if (!interaction.replied && !interaction.deferred) {
+    if (interaction.isRepliable() && !interaction.replied && !interaction.deferred) {
       await interaction.reply({ content: "❌ 内部エラーが発生しました", flags: 64 }).catch(() => {});
     }
   }

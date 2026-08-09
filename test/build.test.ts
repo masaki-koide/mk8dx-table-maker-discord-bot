@@ -64,7 +64,7 @@ test("実サンプル2のレポートは警告なしで通る", () => {
   const report = buildReport(expected02.players, expected02.tags);
   expect(report.warnings).toEqual([]);
   expect(report.clean).toBe(true);
-  expect(report.headline).toBe("✅ 合計 984点 (12レース) / 4チーム — 検算OK");
+  expect(report.headlines).toEqual(["✅ 合計 984点 (12レース) / 4チーム — 検算OK"]);
 });
 
 test("検算・未一致・人数の偏りをすべて警告する", () => {

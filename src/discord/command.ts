@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from "discord.js";
 
 export const COMMAND_NAME = "result";
+export const SUM_COMMAND_NAME = "sum";
 
 /** 指定できるチーム数の上限（12人 ÷ 2人 = 6チームまで） */
 export const MAX_TEAMS = 6;
@@ -36,3 +37,13 @@ export const resultCommand = (() => {
   }
   return builder;
 })();
+
+/**
+ * `/sum`（オプションなし。実行するとモーダルが開く）
+ *
+ * 改行を含むテキストを受け取る必要があるため、入力はすべてモーダル側にある
+ * （docs/design.md §16.2）。Gemini を呼ばないのでレート制限も添付検証も不要。
+ */
+export const sumCommand = new SlashCommandBuilder()
+  .setName(SUM_COMMAND_NAME)
+  .setDescription("複数模擬の結果をまとめて gb2 用の個人点テキストを作ります");
