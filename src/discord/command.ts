@@ -1,7 +1,8 @@
-import { SlashCommandBuilder } from "discord.js";
+import { ApplicationCommandType, ContextMenuCommandBuilder, SlashCommandBuilder } from "discord.js";
 
 export const COMMAND_NAME = "result";
 export const SUM_COMMAND_NAME = "sum";
+export const ADD_TO_SUM_COMMAND_NAME = "集計に追加";
 
 /** 指定できるチーム数の上限（12人 ÷ 2人 = 6チームまで） */
 export const MAX_TEAMS = 6;
@@ -39,11 +40,23 @@ export const resultCommand = (() => {
 })();
 
 /**
- * `/sum`（オプションなし。実行するとモーダルが開く）
+ * `/sum`（オプションなし）
  *
- * 改行を含むテキストを受け取る必要があるため、入力はすべてモーダル側にある
- * （docs/design.md §16.2）。Gemini を呼ばないのでレート制限も添付検証も不要。
+ * 溜めた模擬があればそれを出力してクリアする。0 件ならモーダルを開く
+ * （Discord の外——テキストエディタや gb2——から貼り付ける経路。docs/design.md §16.2）。
+ * Gemini を呼ばないのでレート制限も添付検証も不要。
  */
 export const sumCommand = new SlashCommandBuilder()
   .setName(SUM_COMMAND_NAME)
-  .setDescription("複数模擬の結果をまとめて gb2 用の個人点テキストを作ります");
+  .setDescription("集計に追加した模擬をまとめて gb2 用の個人点テキストを作ります");
+
+/**
+ * メッセージのコンテキストメニュー「集計に追加」。
+ *
+ * 対象メッセージの本文は**インタラクションのペイロードに同梱されて届く**ため、
+ * Message Content Intent も Read Message History も不要（＝Bot の再招待も不要）。
+ * `/result` の出力にも、手で直した表を自分で投稿したものにも使える。
+ */
+export const addToSumCommand = new ContextMenuCommandBuilder()
+  .setName(ADD_TO_SUM_COMMAND_NAME)
+  .setType(ApplicationCommandType.Message);

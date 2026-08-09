@@ -1,18 +1,29 @@
 import { Client, Events, GatewayIntentBits } from "discord.js";
 import { loadConfig } from "./config.ts";
-import { COMMAND_NAME, SUM_COMMAND_NAME } from "./discord/command.ts";
+import { ADD_TO_SUM_COMMAND_NAME, COMMAND_NAME, SUM_COMMAND_NAME } from "./discord/command.ts";
 import { RateLimiter } from "./discord/guard.ts";
-import { handleResult, handleSum, handleSumSubmit, type HandlerDeps } from "./discord/handler.ts";
+import {
+  handleAddToSum,
+  handleResult,
+  handleSum,
+  handleSumSubmit,
+  handleUndoAdd,
+  SUM_UNDO_BUTTON_ID,
+  type HandlerDeps,
+  type SumDeps,
+} from "./discord/handler.ts";
 import { SUM_MODAL_ID } from "./discord/modal.ts";
+import { PendingSums } from "./discord/pending.ts";
 
 const config = loadConfig();
 
-const deps: HandlerDeps = {
+const deps: HandlerDeps & SumDeps = {
   allow: { guildIds: config.allowedGuildIds, userIds: config.allowedUserIds },
   rateLimiter: new RateLimiter({
     perUserHour: config.rateLimitPerUserHour,
     globalDay: config.rateLimitGlobalDay,
   }),
+  pending: new PendingSums(),
   model: config.geminiModel,
 };
 
@@ -31,6 +42,17 @@ client.on(Events.InteractionCreate, async (interaction) => {
     if (interaction.isChatInputCommand()) {
       if (interaction.commandName === COMMAND_NAME) await handleResult(interaction, deps);
       else if (interaction.commandName === SUM_COMMAND_NAME) await handleSum(interaction, deps);
+      return;
+    }
+    if (
+      interaction.isMessageContextMenuCommand() &&
+      interaction.commandName === ADD_TO_SUM_COMMAND_NAME
+    ) {
+      await handleAddToSum(interaction, deps);
+      return;
+    }
+    if (interaction.isButton() && interaction.customId === SUM_UNDO_BUTTON_ID) {
+      await handleUndoAdd(interaction, deps);
       return;
     }
     if (interaction.isModalSubmit() && interaction.customId === SUM_MODAL_ID) {

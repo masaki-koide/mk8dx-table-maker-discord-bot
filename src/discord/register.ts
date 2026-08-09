@@ -1,5 +1,5 @@
 import { REST, Routes } from "discord.js";
-import { resultCommand, sumCommand } from "./command.ts";
+import { addToSumCommand, resultCommand, sumCommand } from "./command.ts";
 
 /** Discord API のエラーコード: Bot がそのサーバーに参加していない／権限がない */
 const MISSING_ACCESS = 50001;
@@ -27,13 +27,14 @@ export async function registerCommands(
   guildIds: readonly string[],
 ): Promise<void> {
   const rest = new REST().setToken(token);
-  const commands = [resultCommand, sumCommand];
+  // addToSumCommand はメッセージのコンテキストメニュー（右クリック → アプリ）
+  const commands = [resultCommand, sumCommand, addToSumCommand];
   const body = commands.map((command) => command.toJSON());
 
   for (const guildId of guildIds) {
     try {
       await rest.put(Routes.applicationGuildCommands(applicationId, guildId), { body });
-      const names = commands.map((command) => `/${command.name}`).join(" ");
+      const names = commands.map((command) => command.name).join(" / ");
       console.log(`  ✅ ${names} を登録しました (guild=${guildId})`);
     } catch (error) {
       if ((error as { code?: number }).code === MISSING_ACCESS) {
