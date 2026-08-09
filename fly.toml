@@ -1,0 +1,17 @@
+# fly.toml app configuration file generated for mk8dx-table-maker-discord-bot on 2026-08-09T18:17:42+09:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'mk8dx-table-maker-discord-bot'
+primary_region = 'nrt'
+
+[build]
+  dockerfile = 'Dockerfile'
+
+[env]
+  NODE_ENV = 'production'
+
+[[vm]]
+  size = 'shared-cpu-1x'
+  memory = '256mb'

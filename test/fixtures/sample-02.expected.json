@@ -1,0 +1,25 @@
+{
+  "note": "背景: 明るい空と城 / 同着2箇所 (4,4,6 と 9,9,11) / 低コントラスト行あり / 1280x720 JPEG",
+  "labelNotes": [
+    "「M む」「S ぴ」のスペースは実在する: 英字→かなの字間は Jちゃーはん で 3-4px、この2つは 12px（画素計測で確認）",
+    "row3 の星は塗りつぶし ★（row1/6/8 の Cafe☆ は白抜き ☆）",
+    "row11 は半濁点 ぴ（濁点 び ではない）"
+  ],
+  "tags": ["Cafe", "S", "M", "も"],
+  "total": 984,
+  "raceCount": 12,
+  "players": [
+    { "name": "Cafe☆とどーる", "score": 111 },
+    { "name": "SPYAIR♪", "score": 93 },
+    { "name": "SS★Turbo", "score": 91 },
+    { "name": "M む", "score": 89 },
+    { "name": "M", "score": 89 },
+    { "name": "Cafe☆コメタ", "score": 85 },
+    { "name": "もりま", "score": 79 },
+    { "name": "Cafe☆スダハ", "score": 76 },
+    { "name": "M★", "score": 72 },
+    { "name": "ももやのごはんですよ", "score": 72 },
+    { "name": "S ぴ", "score": 64 },
+    { "name": "もも", "score": 63 }
+  ]
+}
