@@ -1,0 +1,31 @@
+{
+  "note": "バナーが NICE TRY! / ハイライトが11行目（自分の行） / 同着なし / 名前にスペースとアポストロフィ / 1280x720 JPEG",
+  "labelNotes": [
+    "6行目・12行目は「ゆめばしー」ではなく「ゆめぱしー」（半濁点＝小さい丸）。4倍拡大で確認",
+    "6行目・12行目の星は白抜き ☆（塗りつぶし ★ ではない）",
+    "「NOT FOR ME」「cp is cool」のスペースは名前の一部",
+    "7行目は「X's」（アポストロフィ）",
+    "10行目は小書き「ょ」で Aちょす"
+  ],
+  "layoutNotes": [
+    "上部バナーは CONGRATULATIONS! ではなく NICE TRY!（成績で変わるので目印にできない）",
+    "黄色ハイライトは1位ではなく自分の行。この画像では11行目にある",
+    "右半分の装飾はトロフィーではなくキャラクター（ジュゲム）"
+  ],
+  "total": 984,
+  "raceCount": 12,
+  "players": [
+    { "name": "Athena", "score": 106 },
+    { "name": "NOT FOR ME", "score": 103 },
+    { "name": "NORESU", "score": 92 },
+    { "name": "SSKG5539", "score": 90 },
+    { "name": "cooops", "score": 85 },
+    { "name": "ゆめぱしー☆ひろがる", "score": 81 },
+    { "name": "X's", "score": 80 },
+    { "name": "cp is cool", "score": 75 },
+    { "name": "SPA", "score": 74 },
+    { "name": "Aちょす", "score": 70 },
+    { "name": "XX", "score": 68 },
+    { "name": "ゆめぱしー☆みちなる", "score": 60 }
+  ]
+}
