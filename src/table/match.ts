@@ -26,10 +26,14 @@ type Candidate = { tag: string; length: number; kind: "prefix" | "suffix" };
  * ルール（docs/design.md §5）:
  *   1. 全タグとの前方一致・後方一致をすべて列挙する
  *   2. **最長タグ勝ち**
- *   3. 同じ長さなら後方一致を優先
+ *   3. 同じ長さなら**前方一致**を優先
  *
  * 「後方一致を常に優先」ではない点に注意。タグ `ラッパー` と `あ` があるとき、
  * `ラッパーみあ` は後方一致優先だと `あ` に吸われてしまう。長さで決めれば正しく `ラッパー` になる。
+ *
+ * 同長のタイブレークで前方一致を採るのは、タグを前にしか付けられないリーグがあることに加えて、
+ * 短いタグが名前の末尾にたまたま含まれる誤爆が多いため。
+ * タグ `A` と `C` があるとき、`cocoa` は後方優先だと `A` に吸われてしまう。
  */
 export function matchTag(playerName: string, tags: readonly string[]): string | null {
   const name = normalize(playerName);
@@ -45,7 +49,7 @@ export function matchTag(playerName: string, tags: readonly string[]): string | 
 
   candidates.sort((a, b) => {
     if (a.length !== b.length) return b.length - a.length;
-    if (a.kind !== b.kind) return a.kind === "suffix" ? -1 : 1;
+    if (a.kind !== b.kind) return a.kind === "prefix" ? -1 : 1;
     return 0;
   });
   return candidates[0]!.tag;
